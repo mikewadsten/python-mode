@@ -311,6 +311,8 @@ class _ModuleCache(object):
             del self.module_map[resource]
 
     def get_pymodule(self, resource, force_errors=False):
+        if resource is None:
+            return []
         if resource in self.module_map:
             return self.module_map[resource]
         if resource.is_folder():
