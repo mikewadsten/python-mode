@@ -387,6 +387,8 @@ class RopeContext(object):
             self.resource = None
         else:
             env.debug('Found resource', self.resource.path)
+            if env.var('g:pymode_no_change_on_autoimport', False):
+                self.resource = None
 
         return self
 

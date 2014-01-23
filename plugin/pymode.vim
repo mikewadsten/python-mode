@@ -230,6 +230,10 @@ call pymode#default('g:pymode_rope_use_function_bind', '<C-c>ru')
 " Regenerate project cache on every save
 call pymode#default('g:pymode_rope_regenerate_on_write', 1)
 
+" Force autoimport changes not to go through Rope's change cycle, but rather to
+" simply insert the new line into the imports.
+call pymode#default('g:pymode_no_change_on_autoimport', 0)
+
 " }}}
 
 " }}}
