@@ -183,6 +183,7 @@ if g:pymode_rope
     command! -buffer PymodeRopeRenameModule call pymode#rope#rename_module()
     command! -buffer PymodeRopeModuleToPackage call pymode#rope#module_to_package()
     command! -buffer PymodeRopeRegenerate call pymode#rope#regenerate()
+    command! -buffer PymodeRopeRegenProject call pymode#rope#regenerate_project()
 
     if g:pymode_rope_autoimport
         command! -buffer PymodeRopeAutoImport call pymode#rope#autoimport(expand('<cword>'))

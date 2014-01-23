@@ -231,6 +231,14 @@ def regenerate():
         ctx.project.sync()
 
 
+@env.catch_exceptions
+def regenerate_project():
+    with RopeContext() as ctx:
+        ctx.importer.clear_cache()
+        ctx.importer.generate_cache()
+        ctx.project.sync()
+
+
 def new():
     """ Create a new project. """
     root = env.var('input("Enter project root: ", getcwd())')

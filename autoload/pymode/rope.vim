@@ -83,6 +83,12 @@ fun! pymode#rope#regenerate() "{{{
 endfunction "}}}
 
 
+fun! pymode#rope#regenerate_project() "{{{
+    call pymode#wide_message('Regenerating Rope project cache...')
+    PymodePython rope.regenerate_project()
+endfunction "}}}
+
+
 fun! pymode#rope#new() "{{{
     PymodePython rope.new()
 endfunction "}}}
