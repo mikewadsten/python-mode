@@ -7,7 +7,7 @@ import re
 import site
 import sys
 
-from rope.base import project, libutils, exceptions, change, worder # noqa
+from rope.base import project, libutils, exceptions, change, worder, resources # noqa
 from rope.base.fscommands import FileSystemCommands # noqa
 from rope.base.taskhandle import TaskHandle # noqa
 from rope.contrib import autoimport as rope_autoimport, codeassist, findit, generate # noqa
@@ -312,6 +312,48 @@ def cache_project(cls):
     return get_ctx
 
 
+class CurbufFile(resources.File):
+    """Fake File resource backed by env.curbuf"""
+    def __init__(self, project, name="xx_NOT_FILE_xx"):
+        super(CurbufFile, self).__init__(project, name)
+
+    def read(self):
+        return '\n'.join(env.curbuf)
+
+    def read_bytes(self):
+        return self.read()
+
+    def write(self, contents):
+        try:
+            if contents == self.read():
+                # No change
+                return
+        except:
+            pass
+        buf = contents.split('\n')
+        env.curbuf[:] = buf
+
+    def is_folder(self):
+        return False
+
+    def create(self):
+        raise IOError("How about no.")
+
+    def move(self, new_location):
+        raise IOError("How about... no.")
+
+    def remove(self):
+        raise IOError("Can't remove resource, it's not like it exists!")
+
+    def exists(self):
+        # Because technically it doesn't?
+        return False
+
+    @property
+    def name(self):
+        return env.curbuf.name
+
+
 def autoimport():
     """ Autoimport modules.
 
@@ -382,13 +424,18 @@ class RopeContext(object):
         self.resource = libutils.path_to_resource(
             self.project, env.curbuf.name, 'file')
 
+        if not self.resource.exists():
+            # Editing a non-existent file.
+            env.debug('Editing a non-file buffer')
+
         if not self.resource.exists() or os.path.isdir(
                 self.resource.real_path):
             self.resource = None
         else:
             env.debug('Found resource', self.resource.path)
             if env.var('g:pymode_no_change_on_autoimport', False):
-                self.resource = None
+                env.debug('no_change_on_autoimport set...')
+                self.resource = CurbufFile(self.project, self.resource.path)
 
         return self
 
